@@ -16,13 +16,18 @@ interface dataType {
   [key: string]: any;
 }
 
-const CurrentProduct = styled.div`
+const CurrentProductWrapper = styled.div`
   padding: 20px 100px;
   width: 100%;
+`;
+const CurrentProduct = styled.div`
+  /* padding: 20px 100px;
+  width: 100%; */
   display: grid;
-  gap: 20px;
-  grid-template-columns: 528px 528px;
-  grid-template-rows: 443px 443px;
+  place-content: center;
+  column-gap: 40px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 350px 350px;
   > div {
     width: 100%;
     height: 100%;
@@ -66,10 +71,10 @@ const Title = styled.div`
   display: grid;
   width: 100%;
   height: auto;
-  grid-template-rows: 140px 140px 80px;
+  grid-template-rows: 120px 120px 80px;
   vertical-align: middle;
   > div {
-    padding: 20px 50px;
+    padding: 10px 50px;
   }
 `;
 
@@ -210,59 +215,61 @@ const Product = () => {
   return (
     <ProductWrapper>
       <Header onViewCart={() => navigate("/cart")} />
-      <CurrentProduct>
-        <Carousel>
-          {product && (
-            <img alt="carousel-img" src={carouselImgs[carouselIdx]} />
-          )}
-          <div>
-            <button onClick={() => carouselClick(false)}>
-              <ChevronLeft />
-            </button>
-            <button onClick={() => carouselClick(true)}>
-              <ChevronRight />
-            </button>
-          </div>
-        </Carousel>
-        <Title>
-          <Name>
-            <h2>{product.brand}</h2>
-            <div>{product.name}</div>
-            <p>${product.price}</p>
-          </Name>
-          <div>
-            <h3>Quantity</h3>
-            <CounterWrapper>
-              <IncrementBtn onClick={() => decrement()}>-</IncrementBtn>
-              <input type="text" value={quantity} />
-              <IncrementBtn onClick={() => increment()}>+</IncrementBtn>
-            </CounterWrapper>
-          </div>
-          <div>
-            <AddToCart onClick={() => addToCart()}>Add to Cart</AddToCart>
-          </div>
-        </Title>
-        <Description>
-          <div>
-            <h2>Description</h2>
-          </div>
-          <p>
-            Energize your look with a fresh take on heritage adidas style. The
-            adidas Daily 3.0 Shoes cut a classic profile with a modern suede
-            upper. Your walk across campus or commute across town has never
-            looked or felt this good.
-          </p>
-          <ul>
-            <li>Regular fit</li>
-            <li>Lace closure</li>
-            <li>Rubber outsole with vulcanized look</li>
-            <li>Imported</li>
-          </ul>
-        </Description>
-        <CloseUp>
-          <img alt="closeup" src={product?.zoom} />
-        </CloseUp>
-      </CurrentProduct>
+      <CurrentProductWrapper>
+        <CurrentProduct>
+          <Carousel>
+            {product && (
+              <img alt="carousel-img" src={carouselImgs[carouselIdx]} />
+            )}
+            <div>
+              <button onClick={() => carouselClick(false)}>
+                <ChevronLeft />
+              </button>
+              <button onClick={() => carouselClick(true)}>
+                <ChevronRight />
+              </button>
+            </div>
+          </Carousel>
+          <Title>
+            <Name>
+              <h2>{product.brand}</h2>
+              <div>{product.name}</div>
+              <p>${product.price}</p>
+            </Name>
+            <div>
+              <h3>Quantity</h3>
+              <CounterWrapper>
+                <IncrementBtn onClick={() => decrement()}>-</IncrementBtn>
+                <input type="text" value={quantity} />
+                <IncrementBtn onClick={() => increment()}>+</IncrementBtn>
+              </CounterWrapper>
+            </div>
+            <div>
+              <AddToCart onClick={() => addToCart()}>Add to Cart</AddToCart>
+            </div>
+          </Title>
+          <Description>
+            <div>
+              <h2>Description</h2>
+            </div>
+            <p>
+              Energize your look with a fresh take on heritage adidas style. The
+              adidas Daily 3.0 Shoes cut a classic profile with a modern suede
+              upper. Your walk across campus or commute across town has never
+              looked or felt this good.
+            </p>
+            <ul>
+              <li>Regular fit</li>
+              <li>Lace closure</li>
+              <li>Rubber outsole with vulcanized look</li>
+              <li>Imported</li>
+            </ul>
+          </Description>
+          <CloseUp>
+            <img alt="closeup" src={product?.zoom} />
+          </CloseUp>
+        </CurrentProduct>
+      </CurrentProductWrapper>
       <Footer />
     </ProductWrapper>
   );

@@ -138,15 +138,9 @@ const Cart = () => {
   const [products, setProducts] = useState<ProductType[]>([]);
   const [bag, setBag] = useState<ProductType[]>([]);
   const [total, setTotal] = useState<number>(300);
-  const [subtotal, setSubTotal] = useState<number>(320);
+  const [subtotal, setSubTotal] = useState<number>(2449.98);
   const [quantity, setQuantity] = useState<number>(2);
   const navigate = useNavigate();
-  let prices: number[] = [];
-  for (let i = 0; i < products.length; i++) {
-    prices.push(products[i].price);
-  }
-  const calcSubTotal = () =>
-    prices.reduce((acc, currVal) => acc + 2 * currVal, 0);
 
   const decrement = (quantity: number, i: number) => {
     let cartItem = { ...cart[i], quantity: quantity - 1 };
@@ -169,7 +163,6 @@ const Cart = () => {
       .then((data) => {
         setCart(data);
       });
-    setSubTotal(calcSubTotal());
   }, []);
 
   return (
