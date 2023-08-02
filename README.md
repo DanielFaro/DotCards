@@ -4,12 +4,15 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Available Scripts
 
-In the project directory, you can run:
+First, open up 2 terminals.
 
+In the first navigate to /backend and type
+### `node index.js` to create the db
+
+In the other terminal navigate to master branch so src is within scope and type
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Then navigate to "http://localhost:3000/products"
 
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
