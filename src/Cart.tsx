@@ -1,5 +1,3 @@
-import "./Cart.css";
-import { IProduct } from "./Product";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -10,37 +8,45 @@ interface dataType {
   id: number;
   quantity: number;
 }
-
 interface ProductType {
   [key: string]: any;
 }
 
-const ContentWrapper = styled.div`
+const CartWrapper = styled.div`
   text-align: left;
   width: 100%;
 `;
 
-const CartWrapper = styled.div`
+const BagWrapper = styled.div`
   padding: 20px 100px;
   width: 100%;
-  height: 70%;
   display: grid;
   grid-template-columns: 1.1fr 0.9fr;
-  grid-template-rows: 600px;
+  grid-template-rows: 55%;
   gap: 20px;
-  /* > div {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    text-align: left;
-    /* > img {
-        height: 100%;
-        width: 100%;
-      } */
-  /* h2 {
-      margin-block-start: 10px;
-      margin-block-end: 0;
-    } */
+`;
+
+const Bag = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ScrollWrapper = styled.section`
+  overflow-y: scroll;
+  > div {
+    display: grid;
+    grid-template-columns: 0.5fr 1fr 0.5fr;
+    gap: 20px;
+    place-content: start;
+    height: auto;
+    padding: 20px 0px;
+    border-bottom: 1px solid var(--line-light-grey);
+    > img {
+      height: 166px;
+      width: 166px;
+    }
+  }
 `;
 
 const CheckoutBtn = styled.button`
@@ -67,20 +73,6 @@ const CheckoutBtn = styled.button`
     transition: transform 0.5s ease-in-out;
   }
 `;
-const Description = styled.div`
-  display: grid;
-  grid-template-rows: 80px 1fr 1fr;
-  grid-template-columns: auto;
-
-  > p,
-  li {
-    font-size: 20px;
-  }
-
-  > div:nth-child(1) {
-    border-bottom: 1px solid var(--line-light-grey);
-  }
-`;
 const IncrementBtn = styled.button`
   width: 30px;
   height: 30px;
@@ -97,19 +89,12 @@ const Summary = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 70%;
+  height: 60%;
   vertical-align: middle;
 
   > div {
-    /* padding: 20px 50px; */
     display: flex;
     justify-content: space-between;
-    /* padding: 0px 50px; */
-    /* width: 100%; */
-    /* &:last-child {
-    display: grid;
-    place-content: center;
-  } */
   }
 `;
 
@@ -121,20 +106,47 @@ const Total = styled.div`
   border-top: 1px solid var(--line-light-grey);
 `;
 
-const Bag = styled.div`
-  height: 70%;
-  width: 100%;
+const Quantity = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
+`;
+
+const CounterWrapper = styled.div`
+  width: 136px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line-light-grey);
+  border-radius: 10px;
+
+  > input {
+    height: 34px;
+    width: 50px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    display: inline-block;
+    border: none;
+    vertical-align: middle;
+  }
 `;
 
 const Cart = () => {
   const [cart, setCart] = useState<dataType[]>([]);
   const [products, setProducts] = useState<ProductType[]>([]);
   const [bag, setBag] = useState<ProductType[]>([]);
-  const [total, setTotal] = useState<number>(0);
-  const [subtotal, setSubTotal] = useState<number>(0);
+  const [total, setTotal] = useState<number>(300);
+  const [subtotal, setSubTotal] = useState<number>(320);
+  const [quantity, setQuantity] = useState<number>(2);
   const navigate = useNavigate();
+  let prices: number[] = [];
+  for (let i = 0; i < products.length; i++) {
+    prices.push(products[i].price);
+  }
+  const calcSubTotal = () =>
+    prices.reduce((acc, currVal) => acc + 2 * currVal, 0);
 
   const decrement = (quantity: number, i: number) => {
     let cartItem = { ...cart[i], quantity: quantity - 1 };
@@ -146,122 +158,28 @@ const Cart = () => {
     setCart([...cart, cartItem]);
   };
 
-  // const updateQuantity = () => {
-  //   console.log("## addToCart clicked ==");
-  //   const productId = Number(id);
-
-  //   fetch("/cart", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json" },
-  //     body: JSON.stringify({
-  //       id: productId,
-  //       quantity,
-  //     }),
-  //   });
-  // };
-
-  // let cartItems: ProductType[] = [];
-  // const fillCartItems = () =>
-  //   quantitiesArr.forEach((item) => {
-  //     let product = products.filter((shoe) => shoe.id === item.id);
-  //     console.log("## product in map ", product);
-  //     cartItems.push(product[0]);
-  //   });
-  // console.log("## bag in Cart ==", bag);
-
-  // products.filter((product) => product.id )
-  // const ProductItem = (product) => {
-
-  // }
-  // console.log("## data in Cart", cart, products);
   useEffect(() => {
     fetch("/products")
       .then((response) => response.json())
       .then((data) => {
-        console.log("## data in products useEffect ==", data);
         setProducts(data);
       });
     fetch("/cart")
       .then((response) => response.json())
       .then((data) => {
-        console.log("## data in cart useEffect ==", data);
         setCart(data);
       });
-    const quantitiesArr = cart.filter((shoe) => shoe.quantity > 0);
-    console.log("## quantities arr ==", quantitiesArr);
-    let cartItems: ProductType[] = [];
-    for (let i = 0; i < quantitiesArr.length; i++) {
-      let product = products.filter((shoe) => shoe.id === cart[i].id);
-      cartItems.push(product[0]);
-    }
-    console.log("## bag in Cart ==", cartItems);
-    setBag(cartItems);
-    // fetchUrl("/products");
+    setSubTotal(calcSubTotal());
   }, []);
-  const Bag = styled.div`
-    height: 100%;
-    border: 1px dashed black;
-    display: flex;
-    flex-direction: column;
-    > div {
-      display: grid;
-      grid-template-columns: 0.5fr 1fr 0.5fr;
-      height: 215px;
-      border-bottom: 1px solid var(--line-light-grey);
-      > img {
-        height: 166px;
-        width: 166px;
-      }
-      /* > div {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      } */
-    }
-  `;
 
-  const Quantity = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  `;
-
-  const CounterWrapper = styled.div`
-    width: 136px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--line-light-grey);
-    border-radius: 10px;
-
-    > input {
-      height: 34px;
-      width: 50px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-      display: inline-block;
-      border: none;
-      vertical-align: middle;
-    }
-  `;
-
-  // const getQuantity = (product) => {
-  //   return ;
-  // };
   return (
-    <ContentWrapper>
+    <CartWrapper>
       <Header onViewCart={() => navigate("/cart")} />
-      <CartWrapper>
+      <BagWrapper>
         <Bag>
           <h1>Your Bag</h1>
-          <>
-            {bag.map((product, i) => {
-              let quantity = cart.filter(
-                (cartItem) => cartItem.id === product.id
-              )[0].quantity;
-              console.log("## quantity in map ==", quantity);
+          <ScrollWrapper>
+            {products.map((product, i) => {
               return (
                 <div>
                   <img alt="cart-img" src={product.home} />
@@ -284,7 +202,7 @@ const Cart = () => {
                 </div>
               );
             })}
-          </>
+          </ScrollWrapper>
         </Bag>
         <Summary>
           <h1>Summary</h1>
@@ -306,16 +224,16 @@ const Cart = () => {
           </div>
           <Total>
             <h2>Total</h2>
-            <p>${total}</p>
+            <p>${subtotal + 20}</p>
           </Total>
           <CheckoutBtn>
             <p>Checkout</p>
             <ArrowRight />
           </CheckoutBtn>
         </Summary>
-      </CartWrapper>
+      </BagWrapper>
       <Footer />
-    </ContentWrapper>
+    </CartWrapper>
   );
 };
 
